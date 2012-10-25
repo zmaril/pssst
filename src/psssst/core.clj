@@ -21,7 +21,7 @@
   (print-type-record))
 
 (defmacro defn-recorded
-  ([name params body]
+  ([name params & body]
      `(defn ~name ~params
         (~record '~name '~params ~params)
-        ~body)))
+        ~@body)))
