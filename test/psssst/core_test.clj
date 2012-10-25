@@ -1,16 +1,38 @@
 (ns psssst.core-test
   (:use clojure.test
-        psssst.core))
+        psssst.core
+        [clojure.pprint :only (pprint)]))
 
-(defn-recorded plus-one [a b] (+ a b))
+(def test-filename "example.clj")
+
+(set-filename! test-filename)
+
+(defn check-file-and-reset-atom []
+  (swap! psssst.core/type-record (constantly {}))
+  (slurp test-filename))
+
+(defmacro psssst-testing [doc action m]
+  (let [pm# (with-out-str (pprint m))]
+    (println doc action m pm#)
+    `(do ~action
+         (testing
+             (is ~pm#
+                 (check-file-and-reset-atom))))))
+
+
+(deftest basic-type-checking
+  (defn-recorded f [a] a)
+  (psssst-testing "Integers"
+                 (f 1)
+                 {'f {['a] {(java.lang.Long) 1}}}
+                 ))
+
 (defn-recorded plus-two [a b c] (+ a b))
 (defn-recorded plus-three [{:keys [a b c]}] (+ a b))
 (defn-recorded plus-four [{:keys [a b c]} d] (+ a b d))
 (defn-recorded plus-five [[[a] b] c] (+ a b))
 
-(defn run-tests []
-  (plus-one 1 2)
-  (plus-one 1 3)
+(defn run-my-tests []
 
   (plus-two 1 1 nil)
   (plus-two 1 2 1)
@@ -32,7 +54,3 @@
   (plus-five [[1] 10] 10)
   (plus-five [[1] 2] :key)
   (plus-five [[1] 2] 'symbol))
-
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 1 1))))

@@ -25,5 +25,4 @@
    (java.lang.Long java.lang.Long clojure.lang.Symbol) 1,
    (java.lang.Long java.lang.Long clojure.lang.Keyword) 1,
    (java.lang.Long java.lang.Long java.lang.Long) 1,
-   (java.lang.Long java.lang.Long nil) 1}},
- plus-one {[a b] {(java.lang.Long java.lang.Long) 2}}}
+   (java.lang.Long java.lang.Long nil) 1}}}
