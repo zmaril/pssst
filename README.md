@@ -1,4 +1,4 @@
-# psssst
+# pssst
 
 A Clojure library designed to give you insight into the types getting
 passed into your functions.
