@@ -59,6 +59,6 @@ your functions! Checkout example.clj for a better example.
 
 ## License
 
-Copyright © 2012 Zack Maril
+Copyright © 2012 [Zack Maril](https://twitter.com/ZackMaril)
 
 Distributed under the Eclipse Public License, the same as Clojure.
