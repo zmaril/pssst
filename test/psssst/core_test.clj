@@ -1,6 +1,6 @@
-(ns psssst.core-test
+(ns pssst.core-test
   (:use clojure.test
-        psssst.core
+        pssst.core
         [clojure.pprint :only (pprint)]))
 
 (def test-filename "example.clj")
