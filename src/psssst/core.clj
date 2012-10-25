@@ -5,7 +5,16 @@
 (def type-record (atom {}))
 
 (defn find-type [param-name param-value]
-  (type param-value))
+  (condp = (type param-name)
+
+    clojure.lang.PersistentArrayMap
+    (update-in param-value [:keys] (partial map type))
+
+    clojure.lang.PersistentVector
+    (map find-type param-name param-value)
+
+    clojure.lang.Symbol
+    (type param-value)))
 
 (defn update-record [fn-name param-names param-values]
   (let [typed-array (doall (map find-type param-names param-values))
@@ -16,7 +25,6 @@
                                     create-or-inc)))))
 
 (defn print-type-record []
-  (println type-record-filename)
   (spit type-record-filename
         (with-out-str (clojure.pprint/pprint @type-record))))
 
@@ -32,12 +40,14 @@
 
 (defn-recorded plus-one [a b] (+ a b))
 (defn-recorded plus-two [a b c] (+ a b))
+(defn-recorded plus-three [{:keys [a b c]}] (+ a b))
+(defn-recorded plus-four [{:keys [a b c]} d] (+ a b d))
+(defn-recorded plus-five [[[a] b] c] (+ a b))
 
 (defn run-tests []
   (plus-one 1 2)
   (plus-one 1 3)
-  (plus-one 1 4)
-  (plus-one 1 5)
+
   (plus-two 1 1 nil)
   (plus-two 1 2 1)
   (plus-two 1 3 :a)
@@ -45,6 +55,18 @@
   (plus-two 1 5 {})
   (plus-two 1 6 [])
   (plus-two 1 7 #{})
-  (plus-two 1 8 (java.util.Date.)))
+  (plus-two 1 8 (java.util.Date.))
 
-(run-tests)
+  (plus-three {:a 1 :b 2})
+  (plus-three {:a 1 :b 2 :c 3})
+  (plus-three {:a 1 :b 2 :c :a})
+
+  (plus-four {:a 1 :b 2 :c 3} 10)
+  (plus-four {:a 1 :b 2 :c :a} 10)
+
+  (plus-five [[1] 2] 3)
+  (plus-five [[1] 10] 10)
+  (plus-five [[1] 2] :key)
+  (plus-five [[1] 2] 'symbol)
+
+  )
